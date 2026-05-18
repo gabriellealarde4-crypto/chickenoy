@@ -62,7 +62,12 @@ app.use(express.json({ limit: "18mb" }))
 // JS/CSS files are immediately fetched by browsers. In production this can
 // be changed back to a longer maxAge.
 const staticOptions = { maxAge: 0, etag: false };
-app.use(express.static(path.join(__dirname, '../Frontend'), staticOptions));
+app.use(express.static(path.join(__dirname, "../Frontend"), staticOptions));
+app.use(express.static(path.join(__dirname, "../Frontend/Page"), staticOptions));
+
+app.use("/images", express.static(path.join(__dirname, "../images")));
+app.use("/CSS", express.static(path.join(__dirname, "../CSS")));
+app.use("/JS", express.static(path.join(__dirname, "../JS")));
 
 app.use("/api", limiter)
 
