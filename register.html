@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5, user-scalable=yes">
+  <title>Register - Chicken Noy | Sign Up for Fried Chicken Delivery</title>
+  <meta name="description" content="Create your Chicken Noy account to start ordering delicious crispy fried chicken online.">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="../manifest.json">
+  <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+  <script>
+    (function(){
+      try {
+        const token = localStorage.getItem('token');
+        const userRaw = localStorage.getItem('user');
+        const isLoggedIn = Boolean(token && userRaw && userRaw !== 'null' && userRaw !== 'undefined');
+        if (isLoggedIn) document.documentElement.classList.add('user-logged-in');
+      } catch(e){}
+    })();
+  </script>
+  <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="navbar-logo"><img src="../images/logo.png" alt="Chicken Noy" onerror="this.style.display='none'; this.nextSibling.style.display='inline'"><span style="display:none">Chicken Noy</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="cart.html">Cart</a>
+      <a href="dashboard.html">Orders</a>
+    </div>
+    <div class="auth-buttons">
+      <a href="login.html" class="login-btn">Login</a>
+      <a href="register.html" class="signin-btn">Sign In</a>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+    <div class="menu-toggle" onclick="toggleMenu()">&#9776;</div>
+  </nav>
+
+  <main class="form-page">
+    <h2>Create Account</h2>
+    <form id="registerForm" autocomplete="on">
+      <datalist id="savedAccountEmails"></datalist>
+      <input id="nameInput" name="registerName" placeholder="Full Name" autocomplete="off" required>
+      <input id="emailInput" name="registerEmail" type="email" placeholder="Email Address" autocomplete="email" list="savedAccountEmails" autocapitalize="none" spellcheck="false" required>
+      <div class="password-field">
+        <input id="passwordInput" name="registerPassword" type="password" placeholder="Password" autocomplete="new-password" required>
+        <button type="button" class="password-toggle" aria-label="Show password" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        </button>
+      </div>
+      <input id="phoneInput" name="registerPhone" placeholder="Phone Number (optional)" autocomplete="off">
+      <button id="registerBtn" type="submit">Register</button>
+    </form>
+    <p class="login-link">Already have an account? <a href="login.html">Login here</a></p>
+  </main>
+
+  <script>
+  function toggleMenu() {
+    const navLinks = document.getElementById('navLinks');
+    const authButtons = document.querySelector('.auth-buttons');
+    
+    navLinks.classList.toggle('active');
+    if (authButtons) authButtons.classList.toggle('active');
+    
+    // Close menu when clicking a link
+    const links = navLinks.querySelectorAll('a');
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+        if (authButtons) authButtons.classList.remove('active');
+      });
+    });
+  }
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    const nav = document.querySelector('nav');
+    const navLinks = document.getElementById('navLinks');
+    
+    if (nav && !nav.contains(e.target) && navLinks.classList.contains('active')) {
+      navLinks.classList.remove('active');
+      const authButtons = document.querySelector('.auth-buttons');
+      if (authButtons) authButtons.classList.remove('active');
+    }
+  });
+
+  // Close menu on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const navLinks = document.getElementById('navLinks');
+      const authButtons = document.querySelector('.auth-buttons');
+      navLinks.classList.remove('active');
+      if (authButtons) authButtons.classList.remove('active');
+    }
+  });
+
+  function checkLogin() {
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const isLoggedIn = Boolean(token && user && user.name);
+    document.body.classList.toggle('user-logged-in', isLoggedIn);
+  }
+
+  document.getElementById('logoutBtn')?.addEventListener('click', () => {
+    if (confirm('Are you sure you want to logout?')) {
+      localStorage.clear();
+      alert('Logged out successfully');
+      window.location.href = 'index.html';
+    }
+  });
+
+  document.getElementById('registerForm')?.addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('registerBtn');
+    const name = document.getElementById('nameInput').value.trim();
+    const email = document.getElementById('emailInput').value.trim();
+    const password = document.getElementById('passwordInput').value;
+    const phone = document.getElementById('phoneInput').value.trim();
+
+    // Basic validation
+    if (!name || !email || !password) {
+      alert('Please fill in all required fields (Name, Email, Password)');
+      return;
+    }
+
+    // Prevent double submission
+    if (btn.disabled) return;
+
+    const originalText = btn.textContent;
+    btn.textContent = 'Success';
+    btn.style.backgroundColor = '#27ae60';
+    btn.disabled = true;
+
+    // Set a timeout to prevent the button from getting stuck
+    const timeoutId = setTimeout(() => {
+      btn.textContent = originalText;
+      btn.style.backgroundColor = '';
+      btn.disabled = false;
+      alert('Registration took too long. Please try again.');
+    }, 15000); // 15 second timeout
+
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 12000); // 12 second fetch timeout
+
+      const { response: res, data: json } = await window.ChickenoyApi.request('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, phone }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeout);
+
+      if (!res.ok) {
+        clearTimeout(timeoutId);
+        btn.textContent = originalText;
+        btn.style.backgroundColor = '';
+        btn.disabled = false;
+        alert(json.error || json.message || 'Registration failed');
+        return;
+      }
+
+      // Registration successful - store data immediately
+      localStorage.setItem('token', json.token || '');
+      localStorage.setItem('user', JSON.stringify({ 
+        id: json.id,
+        name: json.name, 
+        email: json.email, 
+        phone: json.phone || ""
+      }));
+      saveAccountEmail(json.email || email);
+      localStorage.setItem('welcomeToast', JSON.stringify({
+        type: 'new',
+        name: json.name || name || 'Guest'
+      }));
+
+      // Clear timeout and redirect
+      clearTimeout(timeoutId);
+      
+      // Redirect after brief success display
+      setTimeout(() => {
+        document.getElementById('registerForm')?.reset();
+        window.location.href = 'index.html';
+      }, 500);
+
+    } catch (error) {
+      clearTimeout(timeoutId);
+      btn.textContent = originalText;
+      btn.style.backgroundColor = '';
+      btn.disabled = false;
+      
+      if (error.name === 'AbortError') {
+        alert('Connection timeout. Please check your internet and try again.');
+      } else {
+        alert('Registration error: ' + error.message);
+      }
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    checkLogin();
+    populateSavedAccountEmails();
+    
+    // Cache buster - clear old cache on page load
+    if ('caches' in window) {
+      caches.keys().then(cacheNames => {
+        cacheNames.forEach(cacheName => {
+          caches.delete(cacheName);
+        });
+      });
+    }
+  });
+
+  window.addEventListener('pageshow', populateSavedAccountEmails);
+
+  function getSavedAccountEmails() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('savedAccountEmails') || '[]');
+      return Array.isArray(saved) ? saved.filter(Boolean).slice(0, 8) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveAccountEmail(email) {
+    const value = String(email || '').trim().toLowerCase();
+    if (!value || !value.includes('@')) return;
+    const saved = getSavedAccountEmails().filter(item => item !== value);
+    saved.unshift(value);
+    localStorage.setItem('savedAccountEmails', JSON.stringify(saved.slice(0, 8)));
+    populateSavedAccountEmails();
+  }
+
+  function populateSavedAccountEmails() {
+    const list = document.getElementById('savedAccountEmails');
+    if (!list) return;
+    list.innerHTML = '';
+    getSavedAccountEmails().forEach(email => {
+      const option = document.createElement('option');
+      option.value = email;
+      list.appendChild(option);
+    });
+  }
+  </script>
+  <footer></footer>
+  <script src="../JS/common.js?v=15"></script>
+  <!-- PWA and Service Worker Setup -->
+  <script src="../JS/pwa-setup.js"></script>
+  <!-- Offline Error Handler -->
+  <script src="../JS/offline-handler.js?v=3"></script>
+</body>
+</html>

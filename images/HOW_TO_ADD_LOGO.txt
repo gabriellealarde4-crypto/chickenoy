@@ -1,0 +1,117 @@
+HOW TO ADD YOUR LOGO.PNG FILE - STEP BY STEP GUIDE
+===================================================
+
+FOLDER LOCATION:
+C:\FriedChicken\Frontend\images\
+
+STEP-BY-STEP INSTRUCTIONS:
+=========================
+
+METHOD 1: USING FILE EXPLORER (Easiest)
+--------------------------------------
+
+1. Open File Explorer on your computer
+   - Click Windows icon + E key, OR
+   - Click the folder icon on your taskbar
+
+2. Navigate to the folder:
+   C:\FriedChicken\Frontend\images
+
+   OR follow this path:
+   - C: drive
+   - FriedChicken folder
+   - Frontend folder
+   - images folder (open it)
+
+3. You should see:
+   - LOGO_SETUP.md file
+   - (empty space for your logo.png)
+
+4. Save your Chickenoy logo image:
+   - Right-click the logo image you want to use
+   - Select "Save image as..." (if from web) OR
+   - Copy the image file
+
+5. In the images folder:
+   - Right-click empty space
+   - Select "Paste"
+
+6. RENAME the file:
+   - Right-click the image
+   - Select "Rename"
+   - Type: logo.png
+   - Press Enter
+
+   IMPORTANT: Filename MUST be exactly: logo.png (lowercase)
+   NOT: Logo.png, LOGO.PNG, or any other variation
+
+
+METHOD 2: DRAG & DROP (Quick)
+-----------------------------
+
+1. Open File Explorer and navigate to:
+   C:\FriedChicken\Frontend\images
+
+2. In another window/tab, locate your logo image file
+
+3. Drag the logo image file directly into the images folder
+
+4. Rename it to exactly: logo.png
+
+
+METHOD 3: COMMAND LINE (Advanced)
+---------------------------------
+
+1. Right-click on your logo image
+2. Get the full file path
+3. Open PowerShell in Admin mode
+4. Run:
+   copy "C:\path\to\your\logo.png" "C:\FriedChicken\Frontend\images\logo.png"
+
+
+VERIFICATION CHECKLIST:
+=======================
+
+After adding logo.png, verify:
+
+✓ File is in: C:\FriedChicken\Frontend\images\
+✓ Filename is exactly: logo.png (all lowercase)
+✓ File format: .png
+✓ File size: Should be reasonable (not 0 KB)
+
+Then in your browser:
+1. Go to: http://localhost:5000
+2. Hard refresh: Ctrl+Shift+R (Windows) or Cmd+Shift+R (Mac)
+3. You should see your Chickenoy logo in the top-left corner
+4. Check all pages: Home, Menu, Login, Cart, Orders
+
+
+TROUBLESHOOTING:
+================
+
+Q: I don't see my logo after hard refresh?
+A: - Make sure filename is EXACTLY "logo.png" (lowercase)
+   - Make sure it's in C:\FriedChicken\Frontend\images\
+   - Clear browser cache: Ctrl+Shift+Delete, clear all
+
+Q: Logo appears broken?
+A: - Make sure image format is .png
+   - Make sure image is not corrupted
+   - Try a different image file
+
+Q: Can't find the images folder?
+A: - Open VS Code
+   - In left sidebar, expand Frontend folder
+   - Click on "images" folder
+   - Right-click → Reveal in File Explorer
+
+
+RECOMMENDED LOGO SIZE:
+======================
+
+Width: 400-500 pixels
+Height: 150-200 pixels
+Format: PNG with transparent background
+Aspect Ratio: 2:1 or 3:1 (wider than tall)
+
+(Will automatically scale to 50px height in navbar)

@@ -1,0 +1,645 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5, user-scalable=yes">
+    <title>Dashboard - Chicken Noy | Manage Your Orders</title>
+    <meta name="description" content="Manage your Chicken Noy account, view order history, and track deliveries.">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+    <script>
+        (function(){
+            try {
+                const token = localStorage.getItem('token');
+                const userRaw = localStorage.getItem('user');
+                const isLoggedIn = Boolean(token && userRaw && userRaw !== 'null' && userRaw !== 'undefined');
+                if (isLoggedIn) document.documentElement.classList.add('user-logged-in');
+            } catch(e){}
+        })();
+    </script>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <style>
+        /* DASHBOARD STYLES */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: clamp(20px, 3vw, 40px);
+            background-color: #2d2415 !important;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: clamp(30px, 5vw, 50px);
+        }
+
+        .dashboard-header h2 {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            color: var(--brand);
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .dashboard-header p {
+            color: var(--muted);
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: clamp(15px, 3vw, 25px);
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: transparent !important;
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 190, 11, 0.28);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--brand);
+            margin: 10px 0;
+        }
+
+        .stat-card-label {
+            color: var(--muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .orders-section {
+            background: transparent !important;
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .orders-header {
+            background: transparent !important;
+            padding: 0 0 14px;
+            border-bottom: 0;
+        }
+
+        .orders-header h3 {
+            margin: 0;
+            color: var(--brand);
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            font-weight: 800;
+        }
+
+        .orders-list {
+            padding: 0;
+        }
+
+        .order-stage-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin: 0 0 22px;
+        }
+
+        .order-stage-tab {
+            min-height: 56px;
+            border: 1px solid rgba(255, 190, 11, 0.55);
+            border-radius: 8px;
+            background: transparent;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .order-stage-tab strong {
+            min-width: 28px;
+            min-height: 28px;
+            border-radius: 999px;
+            background: rgba(255, 190, 11, 0.14);
+            color: #ffbe0b;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .order-stage-tab.active {
+            background: linear-gradient(135deg, #ffbe0b, #f2a600);
+            color: #000000;
+            border-color: #ffbe0b;
+        }
+
+        .order-stage-tab.active strong {
+            background: #000000;
+            color: #ffbe0b;
+        }
+
+        .order-card {
+            border: 2px solid #ffbe0b;
+            border-radius: 10px;
+            padding: clamp(14px, 3vw, 20px);
+            margin-bottom: 18px;
+            background: #15120c !important;
+        }
+
+        .order-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .order-date {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .order-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .order-card-body {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.9fr);
+            gap: 16px;
+            align-items: start;
+        }
+
+        .order-products,
+        .order-customer-box {
+            border: 1px solid #ffbe0b;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .order-customer-box {
+            background: rgba(0, 0, 0, 0.28) !important;
+            color: #ffffff;
+        }
+
+        .order-section-title {
+            color: #ffbe0b;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .order-customer-box .order-section-title {
+            color: #ffbe0b;
+        }
+
+        .order-product {
+            display: grid;
+            grid-template-columns: 82px minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid rgba(255, 190, 11, 0.22);
+        }
+
+        .order-product:first-of-type {
+            border-top: 0;
+            padding-top: 0;
+        }
+
+        .order-product img {
+            width: 82px;
+            height: 82px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        .order-product-info {
+            display: grid;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .order-product-info strong {
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .order-product-info span {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+
+        .order-product-total {
+            color: #ffbe0b;
+            font-weight: 900;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .order-item {
+            padding: clamp(16px, 3vw, 20px);
+            border: 1px solid #eee;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .order-item:hover {
+            border-color: var(--brand);
+            background: rgba(255, 190, 11, 0.06);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .order-id {
+            font-weight: 800;
+            color: var(--brand);
+            font-size: 1.1rem;
+        }
+
+        .order-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-pending {
+            background: rgba(255, 190, 11, 0.2);
+            color: #ff6f00;
+        }
+
+        .status-confirmed {
+            background: rgba(76, 175, 80, 0.2);
+            color: #2e7d32;
+        }
+
+        .status-delivered {
+            background: rgba(76, 175, 80, 0.2);
+            color: #2e7d32;
+        }
+
+        .status-shipped {
+            background: rgba(33, 150, 243, 0.18);
+            color: #64b5f6;
+        }
+
+        .order-actions {
+            margin-top: 14px;
+        }
+
+        .btn-inline,
+        .review-form button {
+            background: linear-gradient(135deg, #ffbe0b, #f2a600);
+            color: #000000;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .review-form {
+            display: grid;
+            grid-template-columns: 140px 1fr auto;
+            gap: 10px;
+        }
+
+        .review-form select,
+        .review-form input {
+            min-height: 44px;
+            border: 1px solid rgba(255, 190, 11, 0.3);
+            border-radius: 8px;
+            background: #1a1a1a;
+            color: #ffffff;
+            padding: 10px;
+        }
+
+        .review-note {
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .order-details {
+            margin: 12px 0;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .order-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-detail-label {
+            color: #555555;
+            font-weight: 600;
+        }
+
+        .order-detail-value {
+            color: #111111;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .order-items {
+            margin: 12px 0;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .order-items-title {
+            font-weight: 700;
+            color: var(--brand);
+            margin-bottom: 8px;
+        }
+
+        .order-item-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .order-item-list li {
+            padding: 4px 0;
+            display: flex;
+            justify-content: space-between;
+            color: var(--muted);
+        }
+
+        .order-total {
+            margin: 12px 0;
+            padding-top: 12px;
+            border-top: 2px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--brand);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: var(--muted);
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .empty-state a {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent), #f2a600);
+            color: var(--text);
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .empty-state a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 190, 11, 0.3);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        @media (max-width: 768px) {
+            .order-stage-tabs,
+            .order-card-body {
+                grid-template-columns: 1fr;
+            }
+
+            .order-stage-tab {
+                min-height: 50px;
+            }
+
+            .order-product {
+                grid-template-columns: 72px minmax(0, 1fr);
+            }
+
+            .order-product img {
+                width: 72px;
+                height: 72px;
+            }
+
+            .order-product-total {
+                grid-column: 2;
+                text-align: left;
+            }
+
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .order-detail-row {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .review-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .order-stage-tabs {
+                gap: 8px;
+            }
+
+            .order-stage-tab {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html" class="navbar-logo"><img src="../images/logo.png" alt="Chicken Noy" onerror="this.style.display='none'; this.nextSibling.style.display='inline'"><span style="display:none">Chicken Noy</span></a>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="cart.html">Cart</a>
+            <a href="dashboard.html" class="active">Orders</a>
+        </div>
+        <div class="auth-buttons">
+            <a href="login.html" class="login-btn" id="loginBtn">Login</a>
+            <a href="register.html" class="signin-btn" id="signinBtn">Sign In</a>
+            <button class="logout-btn" id="logoutBtn" onclick="logout()">Logout</button>
+        </div>
+        <span class="menu-toggle" id="menuToggle">&#9776;</span>
+    </nav>
+
+    <main>
+        <div class="dashboard-container">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <h2>Your Order</h2>
+                <p>Track your payment, shipping, receiving, and completed order records.</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-card-label">Total Orders</div>
+                    <div class="stat-card-value" id="totalOrders">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-label">Pending Orders</div>
+                    <div class="stat-card-value" id="pendingOrders">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-label">Total Spent</div>
+                    <div class="stat-card-value" id="totalSpent">0</div>
+                </div>
+            </div>
+
+            <!-- Orders Section -->
+            <div class="orders-section">
+                <div class="orders-header">
+                    <h3>Your Order</h3>
+                </div>
+                <div class="order-stage-tabs" id="orderStageTabs" aria-label="Order stages"></div>
+                <div class="orders-list" id="ordersList">
+                    <div class="loading">Loading your orders...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Chicken Noy. All rights reserved.</p>
+    </footer>
+
+    <script>
+    function toggleMenu() {
+      const navLinks = document.getElementById('navLinks');
+      const authButtons = document.querySelector('.auth-buttons');
+      
+      navLinks.classList.toggle('active');
+      if (authButtons) authButtons.classList.toggle('active');
+      
+      // Close menu when clicking a link
+      const links = navLinks.querySelectorAll('a');
+      links.forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+          if (authButtons) authButtons.classList.remove('active');
+        });
+      });
+    }
+
+    // Add click event listener to menu toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.getElementById('menuToggle');
+      if (menuToggle) {
+        menuToggle.addEventListener('click', toggleMenu);
+      }
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const nav = document.querySelector('nav');
+      const navLinks = document.getElementById('navLinks');
+      
+      if (nav && !nav.contains(e.target) && navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        const authButtons = document.querySelector('.auth-buttons');
+        if (authButtons) authButtons.classList.remove('active');
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const navLinks = document.getElementById('navLinks');
+        const authButtons = document.querySelector('.auth-buttons');
+        navLinks.classList.remove('active');
+        if (authButtons) authButtons.classList.remove('active');
+      }
+    });
+
+    // Set active link based on current page
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('.nav-links a');
+      navLinks.forEach(link => {
+        if (link.getAttribute('href').includes('dashboard.html')) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    });
+    </script>
+    <script src="../JS/dashboard.js?v=7"></script>
+    <script src="../JS/common.js?v=16"></script>
+    <!-- PWA and Service Worker Setup -->
+    <script src="../JS/pwa-setup.js"></script>
+    <!-- Offline Error Handler -->
+    <script src="../JS/offline-handler.js?v=3"></script>
+</body>
+</html>

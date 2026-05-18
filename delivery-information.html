@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5, user-scalable=yes">
+  <title>Delivery Information - Chicken Noy</title>
+  <meta name="description" content="Chicken Noy delivery information, service area, delivery hours, customer contact details, and payment reminders.">
+  <meta name="theme-color" content="#000000">
+  <link rel="manifest" href="../manifest.json">
+  <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+  <script>
+    (function(){
+      try {
+        const token = localStorage.getItem('token');
+        const userRaw = localStorage.getItem('user');
+        const isLoggedIn = Boolean(token && userRaw && userRaw !== 'null' && userRaw !== 'undefined');
+        if (isLoggedIn) document.documentElement.classList.add('user-logged-in');
+      } catch(e){}
+    })();
+  </script>
+  <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="navbar-logo"><img src="../images/logo.png" alt="Chicken Noy"><span style="display:none">Chicken Noy</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="cart.html">Cart</a>
+      <a href="dashboard.html">Orders</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="auth-buttons">
+      <a href="login.html" class="login-btn">Login</a>
+      <a href="register.html" class="signin-btn">Sign In</a>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+    <span class="menu-toggle" id="menuToggle">&#9776;</span>
+  </nav>
+
+  <main class="info-main">
+    <section class="info-shell">
+      <h1>Delivery Information</h1>
+      <p class="info-intro">Chicken Noy delivers within its local service area from San Vicente, Camarines Norte, Brgy. Man-ogob, Purok 1, subject to rider availability, weather, and order volume.</p>
+
+      <section class="info-section">
+        <h2>Delivery Hours</h2>
+        <p>Delivery and pickup support is available Monday to Saturday, 9:00 AM - 9:00 PM.</p>
+      </section>
+
+      <section class="info-section">
+        <h2>Delivery Details</h2>
+        <ul>
+          <li>Provide a complete address, nearby landmarks, and an active phone number.</li>
+          <li>Keep your phone available after checkout so staff or riders can confirm the order.</li>
+          <li>Delivery time may vary based on distance, queue volume, weather, and road conditions.</li>
+        </ul>
+      </section>
+
+      <section class="info-section">
+        <h2>Payment Reminders</h2>
+        <p>Cash on Delivery orders should be paid to the rider upon arrival. For GCash payments, use the payment page and keep proof of payment ready for confirmation if requested.</p>
+      </section>
+
+      <section class="info-section">
+        <h2>Need Help?</h2>
+        <p>For delivery updates, wrong address corrections, or rider coordination, call <a href="tel:09481409798">09481409798</a> or send a message through the <a href="contact.html">Contact Us</a> page.</p>
+      </section>
+    </section>
+  </main>
+
+  <footer></footer>
+
+  <script>
+    document.getElementById('menuToggle')?.addEventListener('click', () => {
+      document.getElementById('navLinks')?.classList.toggle('active');
+      document.querySelector('.auth-buttons')?.classList.toggle('active');
+    });
+  </script>
+  <script src="../JS/common.js?v=15"></script>
+  <script src="../JS/pwa-setup.js"></script>
+  <script src="../JS/offline-handler.js?v=3"></script>
+</body>
+</html>

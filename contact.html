@@ -1,0 +1,782 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5, user-scalable=yes">
+  <title>Contact - Chicken Noy</title>
+  <meta name="description" content="Contact Chicken Noy for orders, delivery support, payment help, and business messages.">
+  <meta name="theme-color" content="#000000">
+  <meta property="og:title" content="Contact Chicken Noy">
+  <meta property="og:description" content="Message Chicken Noy for orders, delivery, payment, and customer support.">
+  <meta property="og:image" content="../images/logo.png">
+  <link rel="manifest" href="../manifest.json">
+  <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+  <script>
+    (function(){
+      try {
+        const token = localStorage.getItem('token');
+        const userRaw = localStorage.getItem('user');
+        const isLoggedIn = Boolean(token && userRaw && userRaw !== 'null' && userRaw !== 'undefined');
+        if (isLoggedIn) document.documentElement.classList.add('user-logged-in');
+      } catch(e){}
+    })();
+  </script>
+  <link rel="stylesheet" href="../CSS/style.css">
+  <style>
+    .contact-shell {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: clamp(20px, 4vw, 42px);
+      background: #2d2415 !important;
+    }
+
+    .contact-hero {
+      display: grid;
+      grid-template-columns: 1fr 0.9fr;
+      gap: clamp(20px, 5vw, 44px);
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .contact-hero h1 {
+      color: #ffbe0b;
+      font-size: clamp(2rem, 6vw, 4rem);
+      line-height: 1.05;
+      margin-bottom: 14px;
+    }
+
+    .contact-hero p,
+    .contact-card p,
+    .contact-note {
+      color: #cccccc;
+    }
+
+    .contact-hero {
+      position: relative;
+    }
+
+    .contact-hero img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: contain;
+      border-radius: 0;
+      border: 0;
+      background: transparent;
+      /* make mascot clearly visible: neutral dark shadow and normal blend */
+      mix-blend-mode: normal;
+      filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.6));
+      position: relative;
+      z-index: 1;
+    }
+
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 18px;
+    }
+
+    .contact-info {
+      display: grid;
+      gap: 14px;
+    }
+
+    .contact-card,
+    .contact-form {
+      background: #1a1a1a !important;
+      border: 1px solid rgba(255, 190, 11, 0.28);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .contact-card h2,
+    .contact-form h2 {
+      color: #ffbe0b;
+      margin: 0 0 10px;
+    }
+
+    .contact-card a {
+      color: #ffffff;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .contact-form form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .contact-form input,
+    .contact-form select,
+    .contact-form textarea {
+      min-height: 46px;
+      border: 1px solid rgba(255, 190, 11, 0.35);
+      border-radius: 8px;
+      background: #101010;
+      color: #ffffff;
+      padding: 12px;
+      font-family: inherit;
+    }
+
+    .contact-form button {
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ffbe0b, #f2a600);
+      color: #000000;
+      min-height: 48px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .contact-status {
+      min-height: 22px;
+      color: #ffbe0b;
+      font-weight: 700;
+    }
+
+    .message-admin-button {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ffbe0b, #f2a600);
+      color: #000000;
+      font-weight: 900;
+      padding: 12px 18px;
+      cursor: pointer;
+      margin-top: 18px;
+    }
+
+    .customer-bell-dot {
+      display: none;
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ffbe0b;
+      border: 2px solid #ffffff;
+      animation: pulseDot 1.5s infinite;
+    }
+
+    .customer-bell-dot.active {
+      display: block;
+    }
+
+    .customer-messenger-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1800;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(0, 0, 0, 0.68);
+    }
+
+    .customer-messenger-overlay.open {
+      display: flex;
+    }
+
+    .customer-messenger-panel {
+      width: min(820px, 96vw);
+      max-height: min(720px, 90vh);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      background: #101010 !important;
+      border: 2px solid #ffbe0b;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    }
+
+    .customer-messenger-head {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 190, 11, 0.25);
+    }
+
+    .customer-messenger-head strong {
+      color: #ffbe0b;
+      font-size: 1.05rem;
+    }
+
+    .customer-messenger-close {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255, 190, 11, 0.45);
+      border-radius: 50%;
+      background: #000000;
+      color: #ffffff;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .customer-messenger-list {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      overflow: auto;
+      padding: 14px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 190, 11, 0.6) rgba(0, 0, 0, 0.25);
+    }
+
+    .customer-thread {
+      display: grid;
+      gap: 10px;
+    }
+
+    .customer-thread-head {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid rgba(255, 190, 11, 0.25);
+      border-radius: 10px;
+      padding: 10px;
+      background: #171717;
+    }
+
+    .customer-thread-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffbe0b;
+      color: #000000;
+      font-weight: 900;
+    }
+
+    .customer-thread-head strong {
+      display: block;
+      color: #ffffff;
+    }
+
+    .customer-thread-head span {
+      color: #aaaaaa;
+      font-size: 0.78rem;
+    }
+
+    .customer-thread-toggle {
+      position: relative;
+      width: 38px;
+      min-width: 38px;
+      height: 38px;
+      min-height: 38px;
+      border: 1px solid rgba(255, 190, 11, 0.45);
+      border-radius: 50%;
+      background: transparent;
+      color: #ffdf7b;
+      font-weight: 900;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .customer-thread-dot {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ff3b30;
+      border: 2px solid #101010;
+      animation: pulseDot 1.5s infinite;
+    }
+
+    .customer-thread-body {
+      display: grid;
+      gap: 10px;
+    }
+
+    .customer-messenger-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .customer-messenger-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 190, 11, 0.55);
+      border-radius: 999px;
+    }
+
+    .customer-message-bubble {
+      max-width: 88%;
+      border-radius: 12px;
+      padding: 9px 11px;
+      background: #252525 !important;
+      color: #ffffff;
+    }
+
+    .customer-message-bubble.admin {
+      justify-self: start;
+      border: 1px solid rgba(255, 190, 11, 0.28);
+      background: linear-gradient(135deg, #ffbe0b, #f2a600) !important;
+      color: #000000;
+    }
+
+    .customer-message-bubble.customer {
+      justify-self: end;
+      background: #252525 !important;
+      color: #ffffff;
+    }
+
+    .customer-message-bubble p {
+      color: inherit;
+      margin: 0 0 4px;
+    }
+
+    .customer-message-bubble span {
+      color: inherit;
+      opacity: 0.72;
+      font-size: 0.76rem;
+    }
+
+    .customer-message-bubble .message-attachment img {
+      display: block;
+      max-width: min(280px, 100%);
+      max-height: 240px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 190, 11, 0.32);
+      margin-top: 8px;
+    }
+
+    .customer-message-bubble .message-attachment video {
+      display: block;
+      width: min(320px, 100%);
+      max-height: 240px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 190, 11, 0.32);
+      margin-top: 8px;
+      background: #000000;
+    }
+
+    .customer-message-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid rgba(255, 190, 11, 0.25);
+    }
+
+    .customer-message-form input {
+      min-height: 44px;
+      border: 1px solid rgba(255, 190, 11, 0.35);
+      border-radius: 8px;
+      background: #090909;
+      color: #ffffff;
+      padding: 10px;
+    }
+
+    .customer-message-form button {
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ffbe0b, #f2a600);
+      color: #000000;
+      font-weight: 900;
+      padding: 0 14px;
+      cursor: pointer;
+    }
+
+    .contact-faq {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 820px) {
+      .contact-hero,
+      .contact-layout,
+      .contact-faq {
+        grid-template-columns: 1fr;
+      }
+
+      .customer-message-form {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="navbar-logo"><img src="../images/logo.png" alt="Chicken Noy"><span style="display:none">Chicken Noy</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="cart.html">Cart</a>
+      <a href="dashboard.html">Orders</a>
+      <a href="contact.html" class="active">Contact</a>
+    </div>
+    <div class="auth-buttons">
+      <a href="login.html" class="login-btn">Login</a>
+      <a href="register.html" class="signin-btn">Sign In</a>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+    <span class="menu-toggle" id="menuToggle">&#9776;</span>
+  </nav>
+
+  <main>
+    <section class="contact-shell">
+      <div class="contact-hero">
+        <div>
+          <h1>Contact Chicken Noy</h1>
+          <p>Message the business for orders, delivery updates, payment concerns, bulk requests, and customer support. Messages are saved directly to the admin dashboard.</p>
+          <button type="button" class="message-admin-button" onclick="openAdminMessenger()">
+            Message Admin
+            <span aria-hidden="true">&#128276;</span>
+            <span class="customer-bell-dot" id="customerBellDot" aria-hidden="true"></span>
+          </button>
+        </div>
+        <img src="../images/chicken-mascot.png" alt="Chicken Noy chicken mascot">
+      </div>
+
+      <div class="contact-layout">
+        <aside class="contact-info">
+          <div class="contact-card">
+            <h2>Call or Text</h2>
+            <p><a href="tel:09481409798">09481409798</a></p>
+            <p>Best for urgent order updates and same-day delivery concerns.</p>
+          </div>
+          <div class="contact-card">
+            <h2>Facebook</h2>
+            <p>Chicken Noy</p>
+            <p>Send screenshots, proof of payment, or follow-up messages through the Facebook page.</p>
+          </div>
+          <div class="contact-card">
+            <h2>Business Hours</h2>
+            <p>Monday to Saturday</p>
+            <p>9:00 AM - 9:00 PM</p>
+          </div>
+        </aside>
+
+        <section class="contact-form">
+          <h2>Send a Message</h2>
+          <p class="contact-note">Use this form for order questions, delivery instructions, payment confirmation, complaints, and business inquiries.</p>
+          <form id="contactForm">
+            <input name="name" placeholder="Full name" required>
+            <input name="phone" placeholder="Phone number" required>
+            <input name="email" type="email" placeholder="Email address (optional)">
+            <select name="subject" required>
+              <option value="Order Support">Order Support</option>
+              <option value="Payment Concern">Payment Concern</option>
+              <option value="Delivery Update">Delivery Update</option>
+              <option value="Bulk Order">Bulk Order</option>
+              <option value="Business Inquiry">Business Inquiry</option>
+              <option value="Customer Review">Customer Review</option>
+            </select>
+            <textarea name="message" rows="6" placeholder="Write your message here" required></textarea>
+            <button type="submit">Send Message</button>
+            <div id="contactStatus" class="contact-status"></div>
+          </form>
+        </section>
+      </div>
+
+      <section class="contact-faq">
+        <div class="contact-card">
+          <h2>Order Help</h2>
+          <p>Include your order number, phone number, and delivery address for faster checking.</p>
+        </div>
+        <div class="contact-card">
+          <h2>Payment Help</h2>
+          <p>For GCash concerns, include the sender name, amount, and time of payment.</p>
+        </div>
+        <div class="contact-card">
+          <h2>Delivery Help</h2>
+          <p>Use clear landmarks and an active phone number so the rider can contact you.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer></footer>
+
+  <div class="customer-messenger-overlay" id="customerMessengerOverlay" aria-hidden="true">
+    <section class="customer-messenger-panel" aria-label="Message admin">
+      <div class="customer-messenger-head">
+        <div class="messenger-title-wrap">
+          <strong>Message Admin</strong>
+          <span class="message-photo-note">Product photos: use Facebook Business Chat.</span>
+        </div>
+        <button type="button" class="customer-messenger-close" onclick="closeAdminMessenger()" aria-label="Close messages">x</button>
+      </div>
+      <div class="customer-messenger-list" id="customerMessengerList"></div>
+      <form class="customer-message-form" id="customerMessengerForm">
+        <input name="message" placeholder="Write a message" required>
+        <button type="submit">Send</button>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const navLinks = document.getElementById('navLinks');
+      const authButtons = document.querySelector('.auth-buttons');
+      navLinks.classList.toggle('active');
+      if (authButtons) authButtons.classList.toggle('active');
+    }
+
+    document.getElementById('menuToggle')?.addEventListener('click', toggleMenu);
+
+    let customerMessageThreads = [];
+    let customerConversationExpanded = true;
+
+    function getStoredUser() {
+      try {
+        return JSON.parse(localStorage.getItem('user') || '{}');
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function authHeaders() {
+      const token = localStorage.getItem('token');
+      return token ? {'Authorization': `Bearer ${token}`} : {};
+    }
+
+    document.getElementById('contactForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const form = event.target;
+      const button = form.querySelector('button');
+      const status = document.getElementById('contactStatus');
+      button.disabled = true;
+      button.textContent = 'Sending...';
+      status.textContent = '';
+
+      try {
+        const messageText = form.message.value.trim();
+        form.message.setCustomValidity('');
+        if (!messageText) {
+          form.message.setCustomValidity('Please fill in your message before sending.');
+          form.reportValidity();
+          form.message.setCustomValidity('');
+          return;
+        }
+        const { response, data } = await window.ChickenoyApi.request('/api/contact', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', ...authHeaders()},
+          body: JSON.stringify({
+            name: form.name.value.trim(),
+            phone: form.phone.value.trim(),
+            email: form.email.value.trim(),
+            subject: form.subject.value,
+            message: messageText,
+            source: 'contact-page'
+          })
+        });
+        if (!response.ok) throw new Error(data.error || 'Message failed');
+        form.reset();
+        status.textContent = data.message || 'Message sent.';
+        loadCustomerMessages();
+      } catch (error) {
+        status.textContent = error.message;
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Send Message';
+      }
+    });
+
+    async function loadCustomerMessages() {
+      const token = localStorage.getItem('token');
+      const list = document.getElementById('customerMessengerList');
+      const dot = document.getElementById('customerBellDot');
+
+      if (!token) {
+        if (dot) dot.classList.remove('active');
+        if (list) list.innerHTML = '<div class="contact-note">Please log in to message the admin.</div>';
+        return [];
+      }
+
+      try {
+        const { response, data } = await window.ChickenoyApi.request('/api/contact/my-messages', {
+          headers: authHeaders()
+        });
+        if (!response.ok) throw new Error(data.error || 'Unable to load messages');
+        customerMessageThreads = Array.isArray(data) ? data : [];
+        const hasUnread = customerMessageThreads.some(message => message.customerHasUnread);
+        const panelOpen = document.getElementById('customerMessengerOverlay')?.classList.contains('open');
+        if (dot) dot.classList.toggle('active', hasUnread && !panelOpen);
+        renderCustomerMessages(customerMessageThreads);
+        if (hasUnread && panelOpen) {
+          await window.ChickenoyApi.request('/api/contact/my-messages/read', {
+            method: 'PATCH',
+            headers: authHeaders()
+          });
+          customerMessageThreads = customerMessageThreads.map(message => ({...message, customerHasUnread: false}));
+          renderCustomerMessages(customerMessageThreads);
+        }
+        return customerMessageThreads;
+      } catch (error) {
+        if (list) list.innerHTML = `<div class="contact-note">${error.message}</div>`;
+        return [];
+      }
+    }
+
+    function renderCustomerMessages(messages) {
+      const list = document.getElementById('customerMessengerList');
+      if (!list) return;
+
+      const replies = messages.flatMap(message => {
+        const thread = Array.isArray(message.replies) && message.replies.length
+          ? message.replies
+          : [{sender: 'customer', message: message.message, createdAt: message.createdAt}];
+        return thread.map(reply => ({...reply, subject: message.subject}));
+      }).sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+
+      if (!replies.length) {
+        list.innerHTML = '<div class="contact-note">No messages yet. Send a message to start a conversation with the admin.</div>';
+        return;
+      }
+
+      const hasUnread = messages.some(message => message.customerHasUnread);
+      const latest = replies[replies.length - 1];
+      list.innerHTML = `
+        <div class="customer-thread ${customerConversationExpanded ? 'expanded' : 'collapsed'}">
+          <div class="customer-thread-head">
+            <div class="customer-thread-avatar">${profileInitial(getStoredUser().name || 'Customer')}</div>
+            <div>
+              <strong>Chicken Noy Admin</strong>
+              <span>${escapeHtml(latest.subject || 'Message Admin')} | ${new Date(latest.createdAt).toLocaleString()}</span>
+            </div>
+            <button type="button" class="customer-thread-toggle" onclick="toggleCustomerThread()" aria-label="${customerConversationExpanded ? 'Shrink conversation' : 'View conversation'}" aria-expanded="${customerConversationExpanded}">
+              <span aria-hidden="true">${customerConversationExpanded ? '&#9662;' : '&#9656;'}</span>
+              ${hasUnread ? '<span class="customer-thread-dot" aria-label="Unread admin reply"></span>' : ''}
+            </button>
+          </div>
+          <div class="customer-thread-body" ${customerConversationExpanded ? '' : 'hidden'}>
+            ${replies.map(reply => `
+              <div class="customer-message-bubble ${reply.sender === 'admin' ? 'admin' : 'customer'}">
+                <p>${escapeHtml(isAttachmentOnlyMessage(reply) ? 'Photo shared earlier. Use Facebook Business Chat for product photos.' : reply.message)}</p>
+                <span>${reply.sender === 'admin' ? 'Admin' : 'You'} | ${new Date(reply.createdAt).toLocaleString()}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      scrollCustomerMessagesToLatest();
+    }
+
+    function scrollCustomerMessagesToLatest() {
+      const list = document.getElementById('customerMessengerList');
+      if (!list) return;
+      window.requestAnimationFrame(() => {
+        list.scrollTop = list.scrollHeight;
+        list.querySelectorAll('.customer-thread-body').forEach(thread => {
+          thread.scrollTop = thread.scrollHeight;
+        });
+      });
+    }
+
+    function isAttachmentOnlyMessage(reply) {
+      return Boolean(reply?.attachment) && /^photo or video attachment$/i.test(String(reply.message || '').trim());
+    }
+
+    function profileInitial(name) {
+      return String(name || 'C').trim().charAt(0).toUpperCase() || 'C';
+    }
+
+    function toggleCustomerThread() {
+      customerConversationExpanded = !customerConversationExpanded;
+      renderCustomerMessages(customerMessageThreads);
+    }
+
+    async function openAdminMessenger() {
+      if (!localStorage.getItem('token')) {
+        alert('Please log in first to message the admin.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      document.getElementById('customerMessengerOverlay')?.classList.add('open');
+      await loadCustomerMessages();
+      await window.ChickenoyApi.request('/api/contact/my-messages/read', {
+        method: 'PATCH',
+        headers: authHeaders()
+      });
+      document.getElementById('customerBellDot')?.classList.remove('active');
+    }
+
+    function closeAdminMessenger() {
+      document.getElementById('customerMessengerOverlay')?.classList.remove('open');
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char]));
+    }
+
+    document.getElementById('customerMessengerForm')?.addEventListener('submit', async event => {
+      event.preventDefault();
+      await submitCustomerMessage(event.target);
+    });
+
+    async function submitCustomerMessage(form) {
+      const button = form.querySelector('button');
+      const user = getStoredUser();
+      const input = form.message;
+      const messageText = input.value.trim();
+      input.setCustomValidity('');
+      if (!messageText) {
+        input.setCustomValidity('Please fill in your message before sending.');
+        form.reportValidity();
+        input.setCustomValidity('');
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Sending...';
+
+      try {
+        const latestThread = customerMessageThreads[0];
+        const endpoint = latestThread ? `/api/contact/my-messages/${latestThread._id}/reply` : '/api/contact';
+        const payload = latestThread
+          ? {message: messageText}
+          : {
+              name: user.name || 'Customer',
+              phone: user.phone || 'Not provided',
+              email: user.email || '',
+              subject: 'Message Admin',
+              message: messageText,
+              source: 'customer-messenger'
+            };
+        const { response, data } = await window.ChickenoyApi.request(endpoint, {
+          method: latestThread ? 'PATCH' : 'POST',
+          headers: {'Content-Type': 'application/json', ...authHeaders()},
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) throw new Error(data.error || 'Message failed');
+        form.reset();
+        await loadCustomerMessages();
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Send';
+      }
+    }
+
+    window.addEventListener('load', () => {
+      loadCustomerMessages();
+      window.setInterval(loadCustomerMessages, 15000);
+    });
+  </script>
+  <script src="../JS/common.js?v=16"></script>
+  <script src="../JS/pwa-setup.js"></script>
+  <script src="../JS/offline-handler.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5, user-scalable=yes">
+  <title>Profile - Chicken Noy</title>
+  <meta name="description" content="View your Chicken Noy customer profile, orders, and admin messages.">
+  <meta name="theme-color" content="#000000">
+  <link rel="manifest" href="../manifest.json">
+  <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+  <script>
+    (function(){
+      try {
+        const token = localStorage.getItem('token');
+        const userRaw = localStorage.getItem('user');
+        const isLoggedIn = Boolean(token && userRaw && userRaw !== 'null' && userRaw !== 'undefined');
+        if (isLoggedIn) document.documentElement.classList.add('user-logged-in');
+      } catch(e){}
+    })();
+  </script>
+  <link rel="stylesheet" href="../CSS/style.css">
+  <style>
+    .profile-shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: clamp(20px, 4vw, 36px);
+      background: #2d2415 !important;
+      border: 1px solid rgba(255, 190, 11, 0.28);
+      border-radius: 10px;
+    }
+
+    .profile-top {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .profile-avatar-large {
+      width: 94px;
+      height: 94px;
+      border: 3px solid #ffbe0b;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #555555;
+      color: #ffffff;
+      font-size: 2rem;
+      font-weight: 900;
+    }
+
+    .profile-avatar-large.woman {
+      background: #c45aa0;
+    }
+
+    .profile-avatar-large.man {
+      background: #2878d8;
+    }
+
+    .profile-top h1 {
+      color: #ffbe0b;
+      margin: 0 0 6px;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+    }
+
+    .profile-top p,
+    .profile-card p,
+    .profile-card span {
+      color: #d6d6d6;
+      margin: 4px 0;
+    }
+
+    .profile-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      margin: 22px 0;
+    }
+
+    .profile-action {
+      min-height: 48px;
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ffbe0b, #f2a600);
+      color: #ffffff;
+      font-weight: 900;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .profile-card {
+      background: #1a1a1a !important;
+      border: 1px solid rgba(255, 190, 11, 0.24);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .profile-card strong {
+      display: block;
+      color: #ffbe0b;
+      margin-bottom: 6px;
+    }
+
+    .profile-section {
+      margin-top: 24px;
+    }
+
+    .profile-section h2 {
+      color: #ffbe0b;
+      margin-bottom: 12px;
+    }
+
+    .profile-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    @media (max-width: 560px) {
+      .profile-top {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="navbar-logo"><img src="../images/logo.png" alt="Chicken Noy"><span style="display:none">Chicken Noy</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="cart.html">Cart</a>
+      <a href="dashboard.html">Orders</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="auth-buttons">
+      <a href="login.html" class="login-btn">Login</a>
+      <a href="register.html" class="signin-btn">Sign In</a>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+    <span class="menu-toggle" id="menuToggle">&#9776;</span>
+  </nav>
+
+  <main>
+    <section class="profile-shell">
+      <div class="profile-top">
+        <div id="profileAvatar" class="profile-avatar-large">C</div>
+        <div>
+          <h1 id="profileName">Customer Profile</h1>
+          <p id="profileEmail">Loading account...</p>
+          <p id="profilePhone"></p>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <a class="profile-action" href="dashboard.html">Orders</a>
+        <a class="profile-action" href="contact.html">Admin Messages</a>
+        <a class="profile-action" href="index.html">Main Page</a>
+      </div>
+
+      <div class="profile-grid" id="profileStats"></div>
+
+      <section class="profile-section">
+        <h2>Recent Orders</h2>
+        <div class="profile-list" id="profileOrders"></div>
+      </section>
+
+      <section class="profile-section">
+        <h2>Admin Messages</h2>
+        <div class="profile-list" id="profileMessages"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer></footer>
+
+  <script>
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function formatPrice(value) {
+      return `PHP ${Number(value || 0).toFixed(2)}`;
+    }
+
+    function profileType(name) {
+      const first = String(name || "").trim().split(/\s+/)[0].toLowerCase();
+      const femaleNames = ["abby", "anna", "ana", "maria", "mary", "mae", "joy", "jane", "angel", "princess", "kate", "kim", "bea", "joan", "rose"];
+      const maleNames = ["gio", "john", "juan", "mark", "michael", "paul", "james", "joshua", "carl", "ken", "angelo", "jose"];
+      if (femaleNames.includes(first)) return "woman";
+      if (maleNames.includes(first)) return "man";
+      return "person";
+    }
+
+    function initial(name) {
+      return String(name || "C").trim().charAt(0).toUpperCase() || "C";
+    }
+
+    async function loadProfile() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      try {
+        const { response, data } = await window.ChickenoyApi.request("/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error(data.error || "Profile unavailable");
+
+        localStorage.setItem("user", JSON.stringify({
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          phone: data.user.phone || ""
+        }));
+
+        const avatar = document.getElementById("profileAvatar");
+        avatar.textContent = initial(data.user.name);
+        avatar.className = `profile-avatar-large ${profileType(data.user.name)}`;
+        document.getElementById("profileName").textContent = data.user.name || "Customer";
+        document.getElementById("profileEmail").textContent = data.user.email || "";
+        document.getElementById("profilePhone").textContent = data.user.phone ? `Phone: ${data.user.phone}` : "Phone number not set";
+
+        document.getElementById("profileStats").innerHTML = `
+          <article class="profile-card"><strong>${data.stats.orders}</strong><span>Total Orders</span></article>
+          <article class="profile-card"><strong>${formatPrice(data.stats.totalSpent)}</strong><span>Total Spent</span></article>
+          <article class="profile-card"><strong>${data.stats.messages}</strong><span>Admin Messages</span></article>
+          <article class="profile-card"><strong>${data.stats.unreadMessages}</strong><span>Unread Replies</span></article>
+        `;
+
+        document.getElementById("profileOrders").innerHTML = data.orders.length
+          ? data.orders.map(order => `
+              <article class="profile-card">
+                <strong>#${escapeHtml(order._id)} - ${escapeHtml(order.orderStatus)}</strong>
+                <p>${(order.items || []).map(item => `${escapeHtml(item.name)} x${item.quantity}`).join(", ")}</p>
+                <span>Total: ${formatPrice(order.totalPrice)} | ${new Date(order.createdAt).toLocaleString()}</span>
+              </article>
+            `).join("")
+          : `<article class="profile-card"><strong>No orders yet</strong><p>Your orders will appear after checkout.</p></article>`;
+
+        document.getElementById("profileMessages").innerHTML = data.messages.length
+          ? data.messages.map(message => `
+              <article class="profile-card">
+                <strong>${escapeHtml(message.subject || "Admin Message")}</strong>
+                <p>${escapeHtml(message.message || "")}</p>
+                <span>${message.customerHasUnread ? "Unread admin reply" : "Conversation"} | ${new Date(message.createdAt).toLocaleString()}</span>
+              </article>
+            `).join("")
+          : `<article class="profile-card"><strong>No admin messages yet</strong><p>Messages from the business will appear here.</p></article>`;
+      } catch (error) {
+        alert(error.message);
+        localStorage.removeItem("token");
+        window.location.href = "login.html";
+      }
+    }
+
+    document.getElementById("logoutBtn")?.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "login.html";
+    });
+
+    document.getElementById("menuToggle")?.addEventListener("click", () => {
+      document.getElementById("navLinks")?.classList.toggle("active");
+      document.querySelector(".auth-buttons")?.classList.toggle("active");
+    });
+
+    window.addEventListener("load", loadProfile);
+  </script>
+  <script src="../JS/common.js?v=15"></script>
+  <script src="../JS/pwa-setup.js"></script>
+  <script src="../JS/offline-handler.js?v=3"></script>
+</body>
+</html>

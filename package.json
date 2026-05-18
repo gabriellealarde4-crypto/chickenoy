@@ -1,0 +1,16 @@
+{
+  "name": "chickenoy-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static frontend dev server for Chicken Noy",
+  "scripts": {
+    "start": "http-server -p 5000 -c-1 ./",
+    "serve": "npm run start"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}

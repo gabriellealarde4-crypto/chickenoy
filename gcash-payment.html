@@ -1,0 +1,404 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5, user-scalable=yes">
+    <title>GCash Payment - Chicken Noy | Secure Payment</title>
+    <meta name="description" content="Complete your Chicken Noy order with GCash. Fast and secure payment processing.">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+    <script>
+        (function(){
+            try {
+                const token = localStorage.getItem('token');
+                const userRaw = localStorage.getItem('user');
+                const isLoggedIn = Boolean(token && userRaw && userRaw !== 'null' && userRaw !== 'undefined');
+                if (isLoggedIn) document.documentElement.classList.add('user-logged-in');
+            } catch(e){}
+        })();
+    </script>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <style>
+        /* GCASH PAYMENT PAGE STYLES */
+        .payment-container {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: clamp(25px, 5vw, 40px);
+            background: #2d2415 !important;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .payment-container h2 {
+            text-align: center;
+            color: var(--brand);
+            margin-bottom: 30px;
+            font-size: clamp(1.5rem, 4vw, 28px);
+            font-weight: 800;
+        }
+
+        .payment-content {
+            text-align: center;
+        }
+
+        .gcash-payment-logo {
+            display: block;
+            width: min(180px, 64vw);
+            height: auto;
+            margin: 0 auto 26px;
+            background: transparent !important;
+        }
+
+        .payment-status {
+            background: transparent !important;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 2px solid var(--accent);
+        }
+
+        .payment-status p {
+            color: var(--muted);
+            font-size: 16px;
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .payment-status .step {
+            color: var(--brand);
+            font-weight: 700;
+            font-size: 18px;
+            margin: 12px 0;
+        }
+
+        .qr-section {
+            display: grid;
+            justify-items: center;
+            margin: 30px 0;
+        }
+
+        .qr-section h3 {
+            color: var(--text);
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .qr-code {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            width: fit-content;
+            max-width: 100%;
+        }
+
+        .qr-code img {
+            width: min(100%, 300px);
+            height: auto;
+            max-height: 520px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .payment-instructions {
+            background: transparent !important;
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 190, 11, 0.28);
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .payment-instructions h4 {
+            color: var(--brand);
+            margin: 0 0 12px;
+            font-size: 16px;
+        }
+
+        .payment-instructions ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .payment-instructions li {
+            color: var(--text);
+            font-size: 14px;
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .payment-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn-confirm {
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent), #f2a600);
+            color: var(--text);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(255, 190, 11, 0.3);
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255, 190, 11, 0.4);
+        }
+
+        .btn-cancel {
+            padding: 12px;
+            background: linear-gradient(135deg, var(--accent), #f2a600);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: linear-gradient(135deg, #ffcc33, #ffb000);
+            transform: translateY(-2px);
+        }
+
+        .success-icon {
+            font-size: 48px;
+            margin: 20px 0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .payment-container {
+                margin: 20px 15px;
+                padding: 20px;
+            }
+
+            .qr-code img {
+                width: min(100%, 260px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .payment-container {
+                margin: 15px 10px;
+                padding: 15px;
+            }
+
+            .qr-code img {
+                width: min(100%, 230px);
+            }
+
+            .payment-instructions {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html" class="navbar-logo"><img src="../images/logo.png" alt="Chicken Noy" onerror="this.style.display='none'; this.nextSibling.style.display='inline'"><span style="display:none">Chicken Noy</span></a>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="cart.html">Cart</a>
+            <a href="dashboard.html">Orders</a>
+        </div>
+        <div class="auth-buttons">
+            <a href="login.html" class="login-btn" id="loginBtn">Login</a>
+            <a href="register.html" class="signin-btn" id="signinBtn">Sign In</a>
+            <button class="logout-btn" id="logoutBtn" onclick="logout()">Logout</button>
+        </div>
+        <span class="menu-toggle" id="menuToggle">&#9776;</span>
+    </nav>
+
+    <main>
+        <div class="payment-container">
+            <h2>GCash Payment</h2>
+
+                        <div class="gcash-payment-badge" role="img" aria-label="GCash">
+                            <img class="gcash-payment-fallback" src="../images/gcash-logo.png?v=2" alt="GCash">
+                        </div>
+
+            <div class="payment-status">
+                <p class="step">Step 1: Scan QR Code</p>
+                <p>Please scan the QR code below using your GCash mobile app to complete the payment.</p>
+            </div>
+
+            <div class="qr-section">
+                <h3>Scan to Pay</h3>
+                <div class="qr-code">
+                    <img src="../images/gcash-qr.png" alt="GCash Payment QR Code">
+                </div>
+                <p style="color: var(--muted); font-size: 14px;">No GCash? Ask the store for alternative payment options.</p>
+            </div>
+
+            <div class="payment-instructions">
+                <h4>Payment Instructions</h4>
+                <ol>
+                    <li>Open your GCash app</li>
+                    <li>Tap "Send Money" or "Pay Bills"</li>
+                    <li>Scan the QR code above</li>
+                    <li>Enter the payment amount</li>
+                    <li>Confirm your transaction</li>
+                    <li>Click "Confirm Payment" below</li>
+                    <li>Send your proof of payment to the Chicken Noy Facebook Business Chat for approval.</li>
+                </ol>
+            </div>
+
+            <div class="payment-buttons">
+                <button class="btn-confirm" onclick="confirmPayment(this)">Confirm Payment</button>
+                <button class="btn-cancel" onclick="cancelPayment()">Cancel Payment</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Chicken Noy. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let paymentConfirming = false;
+        let leftForGcash = false;
+
+        async function confirmPayment(button) {
+            if (paymentConfirming) return;
+            paymentConfirming = true;
+            const btn = button || document.querySelector(".btn-confirm");
+            const orderId = localStorage.getItem("lastOrderID");
+            const token = localStorage.getItem("token");
+
+            if (!orderId || !token) {
+                alert("Missing order session. Please check your dashboard.");
+                window.location = "dashboard.html";
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = "Processing...";
+            }
+
+            try {
+                const { response, data } = await window.ChickenoyApi.request(`/api/orders/${orderId}/pay`, {
+                    method: "PATCH",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Payment confirmation failed");
+                }
+
+                alert("Payment confirmed! Your order is being prepared.\n\nThank you for choosing Chicken Noy!");
+                localStorage.setItem("chickenNoyOrderStage", "to-ship");
+                window.location = "dashboard.html";
+            } catch (error) {
+                paymentConfirming = false;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = "Confirm Payment";
+                }
+                alert(error.message);
+            }
+        }
+
+        function cancelPayment() {
+            if (confirm("Are you sure you want to cancel this payment?")) {
+                window.location = "cart.html";
+            }
+        }
+
+        // Check if user is logged in
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Please login first");
+                window.location = "login.html";
+            }
+        });
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                leftForGcash = true;
+                return;
+            }
+
+            if (leftForGcash && !paymentConfirming) {
+                confirmPayment();
+            }
+        });
+    </script>
+    <!-- PWA and Service Worker Setup -->
+    <script>
+    function toggleMenu() {
+      const navLinks = document.getElementById('navLinks');
+      const authButtons = document.querySelector('.auth-buttons');
+      
+      navLinks.classList.toggle('active');
+      if (authButtons) authButtons.classList.toggle('active');
+      
+      // Close menu when clicking a link
+      const links = navLinks.querySelectorAll('a');
+      links.forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+          if (authButtons) authButtons.classList.remove('active');
+        });
+      });
+    }
+
+    // Add click event listener to menu toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.getElementById('menuToggle');
+      if (menuToggle) {
+        menuToggle.addEventListener('click', toggleMenu);
+      }
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const nav = document.querySelector('nav');
+      const navLinks = document.getElementById('navLinks');
+      
+      if (nav && !nav.contains(e.target) && navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        const authButtons = document.querySelector('.auth-buttons');
+        if (authButtons) authButtons.classList.remove('active');
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const navLinks = document.getElementById('navLinks');
+        const authButtons = document.querySelector('.auth-buttons');
+        navLinks.classList.remove('active');
+        if (authButtons) authButtons.classList.remove('active');
+      }
+    });
+    </script>
+    <script src="../JS/common.js?v=15"></script>
+    <script src="../JS/pwa-setup.js"></script>
+    <!-- Offline Error Handler -->
+    <script src="../JS/offline-handler.js?v=3"></script>
+</body>
+</html>

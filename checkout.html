@@ -1,0 +1,296 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5, user-scalable=yes">
+    <title>Checkout - Chicken Noy | Complete Your Order</title>
+    <meta name="description" content="Complete your Chicken Noy order with secure payment options. Fast and easy checkout.">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+    <script>
+        (function(){
+            try {
+                const token = localStorage.getItem('token');
+                const userRaw = localStorage.getItem('user');
+                const isLoggedIn = Boolean(token && userRaw && userRaw !== 'null' && userRaw !== 'undefined');
+                if (isLoggedIn) document.documentElement.classList.add('user-logged-in');
+            } catch(e){}
+        })();
+    </script>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <style>
+        /* CHECKOUT PAGE STYLES */
+        .checkout-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: clamp(25px, 5vw, 40px);
+            background: #2d2415 !important;
+            border-radius: var(--radius);
+            box-shadow: none;
+        }
+
+        .checkout-container h2 {
+            text-align: center;
+            color: var(--brand);
+            margin-bottom: 30px;
+            font-size: clamp(1.5rem, 4vw, 28px);
+            font-weight: 800;
+        }
+
+        .checkout-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: var(--text);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 14px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background-color: #2a2a2a;
+            color: #ffffff;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ffbe0b;
+            box-shadow: 0 0 8px rgba(255, 190, 11, 0.3);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .order-summary {
+            background: transparent !important;
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 190, 11, 0.28);
+            margin: 20px 0;
+        }
+
+        .order-summary h3 {
+            color: var(--brand);
+            margin: 0 0 12px;
+            font-size: 16px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .order-total {
+            border-top: 2px solid rgba(255, 190, 11, 0.2);
+            padding-top: 12px;
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--brand);
+        }
+
+        .checkout-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .checkout-buttons button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--accent), #f2a600);
+            color: var(--text);
+            box-shadow: 0 6px 15px rgba(255, 190, 11, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255, 190, 11, 0.4);
+        }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, var(--accent), #f2a600);
+            color: var(--text);
+            border: none;
+        }
+
+        .btn-cancel:hover {
+            background: linear-gradient(135deg, #ffcc33, #ffb000);
+            transform: translateY(-2px);
+            color: var(--text);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .checkout-container {
+                margin: 20px 15px;
+                padding: 20px;
+            }
+
+            .checkout-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html" class="navbar-logo"><img src="../images/logo.png" alt="Chicken Noy" onerror="this.style.display='none'; this.nextSibling.style.display='inline'"><span style="display:none">Chicken Noy</span></a>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="cart.html">Cart</a>
+            <a href="dashboard.html">Orders</a>
+        </div>
+        <div class="auth-buttons">
+            <a href="login.html" class="login-btn" id="loginBtn">Login</a>
+            <a href="register.html" class="signin-btn" id="signinBtn">Sign In</a>
+            <button class="logout-btn" id="logoutBtn" onclick="logout()">Logout</button>
+        </div>
+        <span class="menu-toggle" id="menuToggle">&#9776;</span>
+    </nav>
+
+    <main>
+        <div class="checkout-container">
+            <h2>Checkout</h2>
+
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div id="orderItems"></div>
+                <div class="order-total">
+                    <span>Total:</span>
+                    <span id="orderTotal">PHP 0.00</span>
+                </div>
+            </div>
+
+            <form id="checkoutForm" class="checkout-form">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="name" placeholder="Juan Cruz" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="phone" placeholder="09123456789" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Delivery Address *</label>
+                    <input type="text" id="address" placeholder="Quezon City" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Method *</label>
+                    <select id="payment" required>
+                        <option value="">Select Payment Method</option>
+                        <option value="COD">Cash on Delivery (COD)</option>
+                        <option value="GCASH">GCash</option>
+                    </select>
+                </div>
+
+                <div class="checkout-buttons">
+                    <button type="submit" class="btn-submit">Place Order</button>
+                    <button type="button" class="btn-cancel" onclick="window.location='cart.html'">Back to Cart</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Chicken Noy. All rights reserved.</p>
+    </footer>
+
+    <script>
+    function toggleMenu() {
+      const navLinks = document.getElementById('navLinks');
+      const authButtons = document.querySelector('.auth-buttons');
+      
+      navLinks.classList.toggle('active');
+      if (authButtons) authButtons.classList.toggle('active');
+      
+      // Close menu when clicking a link
+      const links = navLinks.querySelectorAll('a');
+      links.forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+          if (authButtons) authButtons.classList.remove('active');
+        });
+      });
+    }
+
+    // Add click event listener to menu toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.getElementById('menuToggle');
+      if (menuToggle) {
+        menuToggle.addEventListener('click', toggleMenu);
+      }
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const nav = document.querySelector('nav');
+      const navLinks = document.getElementById('navLinks');
+      
+      if (nav && !nav.contains(e.target) && navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        const authButtons = document.querySelector('.auth-buttons');
+        if (authButtons) authButtons.classList.remove('active');
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const navLinks = document.getElementById('navLinks');
+        const authButtons = document.querySelector('.auth-buttons');
+        navLinks.classList.remove('active');
+        if (authButtons) authButtons.classList.remove('active');
+      }
+    });
+    </script>
+    <script src="../JS/checkout.js?v=3"></script>
+    <script src="../JS/common.js?v=15"></script>
+    <!-- PWA and Service Worker Setup -->
+    <script src="../JS/pwa-setup.js"></script>
+    <!-- Offline Error Handler -->
+    <script src="../JS/offline-handler.js?v=3"></script>
+</body>
+</html>

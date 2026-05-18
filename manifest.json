@@ -1,0 +1,73 @@
+{
+  "name": "Chicken Noy - Order Crispy Fried Chicken",
+  "short_name": "Chicken Noy",
+  "description": "Order delicious crispy fried chicken online. Hot, Fresh, Delivered Fast.",
+  "start_url": "/Page/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#e63946",
+  "categories": ["food", "shopping"],
+  "screenshots": [
+    {
+      "src": "/images/screenshot-1.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/images/screenshot-2.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/images/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "View Menu",
+      "short_name": "Menu",
+      "description": "View our delicious menu",
+      "url": "/Page/menu.html?source=shortcut",
+      "icons": [{ "src": "/images/favicon.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "View Cart",
+      "short_name": "Cart",
+      "description": "Check your shopping cart",
+      "url": "/Page/cart.html?source=shortcut",
+      "icons": [{ "src": "/images/favicon.png", "sizes": "96x96" }]
+    }
+  ],
+  "share_target": {
+    "action": "/Page/index.html",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded"
+  }
+}

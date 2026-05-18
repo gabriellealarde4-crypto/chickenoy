@@ -1,0 +1,289 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Chicken Noy - Delicious Crispy Fried Chicken</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5, user-scalable=yes">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Order delicious crispy fried chicken online. Hot, Fresh, Delivered Fast. Visit Chicken Noy for quality fried chicken delivery.">
+  <meta name="keywords" content="fried chicken, order online, chicken delivery, crispy chicken, food delivery">
+  <meta name="author" content="Chicken Noy">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Chicken Noy">
+  
+  <!-- Open Graph Meta Tags for Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Chicken Noy - Delicious Crispy Fried Chicken">
+  <meta property="og:description" content="Order delicious crispy fried chicken online. Hot, Fresh, Delivered Fast.">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="../images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Chicken Noy">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chicken Noy - Delicious Crispy Fried Chicken">
+  <meta name="twitter:description" content="Order delicious crispy fried chicken online. Hot, Fresh, Delivered Fast.">
+  <meta name="twitter:image" content="../images/og-image.png">
+  
+  <!-- Additional Mobile Meta Tags -->
+  <meta name="format-detection" content="telephone=no">
+  <meta name="format-detection" content="email=no">
+  <meta name="color-scheme" content="light">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="../manifest.json">
+  
+  <!-- Icons -->
+  <link rel="icon" type="image/png" href="../images/favicon.png">
+  <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+  <link rel="shortcut icon" href="../images/favicon.png" type="image/png">
+  
+  <!-- Inline early auth check to avoid header flicker (runs before CSS loads) -->
+  <script>
+    (function(){
+      try {
+        const token = localStorage.getItem('token');
+        const userRaw = localStorage.getItem('user');
+        const isLoggedIn = Boolean(token && userRaw && userRaw !== 'null' && userRaw !== 'undefined');
+        if (isLoggedIn) document.documentElement.classList.add('user-logged-in');
+      } catch(e){}
+    })();
+  </script>
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+  <div id="welcomeToast" class="welcome-toast" role="status" aria-live="polite"></div>
+  <nav>
+    <a href="index.html" class="navbar-logo"><img src="../images/logo.png" alt="Chicken Noy" onerror="this.style.display='none'; this.nextSibling.style.display='inline'"><span style="display:none">Chicken Noy</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" class="active">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="cart.html">Cart</a>
+      <a href="dashboard.html">Orders</a>
+    </div>
+    <div class="auth-buttons">
+      <a href="login.html" class="login-btn">Login</a>
+      <a href="register.html" class="signin-btn">Sign In</a>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+    <div class="menu-toggle" onclick="toggleMenu()">&#9776;</div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-content">
+      <h1>Welcome to Chicken Noy!</h1>
+      <h2>Delicious Crispy Fried Chicken</h2>
+      <p class="hero-tagline">Hot. Fresh. Delivered Fast.</p>
+      <p class="hero-subtitle">Craving something crispy and satisfying? We've got you covered.</p>
+      <a href="menu.html" class="btn-order-now">ORDER NOW</a>
+    </div>
+  </header>
+
+  <section class="features">
+    <div class="card">
+      <h3><span class="feature-emoji" aria-hidden="true">&#128293;</span> Fresh Chicken</h3>
+      <p>Made daily with quality ingredients.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="feature-emoji" aria-hidden="true">&#128666;</span> Fast Delivery</h3>
+      <p>Hot meals delivered quickly.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="feature-emoji" aria-hidden="true">&#11088;</span> Best Taste</h3>
+      <p>Crispy and juicy fried chicken.</p>
+    </div>
+  </section>
+
+  <!-- Promotional Section with Scrolling Images -->
+  <section class="promo-section">
+    <div class="promo-carousel">
+      <div class="carousel-track">
+        <div class="carousel-set">
+          <div class="carousel-item"><img src="../images/menu-item-1.png" alt="Chicken Noy Party Platter PHP 1000" class="carousel-image"></div>
+          <div class="carousel-item"><img src="../images/menu-item-2.png" alt="Chicken Noy Bilao PHP 320" class="carousel-image"></div>
+          <div class="carousel-item"><img src="../images/menu-item-3.png" alt="Chicken Noy Ultimate Feast PHP 1000" class="carousel-image"></div>
+          <div class="carousel-item"><img src="../images/menu-item-4.png" alt="Chicken Noy Classic Fried Leg PHP 25" class="carousel-image"></div>
+          <div class="carousel-item"><img src="../images/menu-item-5.png" alt="Chicken Noy Crispy Bundle PHP 500" class="carousel-image"></div>
+        </div>
+        <!-- Duplicates for seamless infinite loop -->
+        <div class="carousel-set" aria-hidden="true">
+          <div class="carousel-item"><img src="../images/menu-item-1.png" alt="" class="carousel-image"></div>
+          <div class="carousel-item"><img src="../images/menu-item-2.png" alt="" class="carousel-image"></div>
+          <div class="carousel-item"><img src="../images/menu-item-3.png" alt="" class="carousel-image"></div>
+          <div class="carousel-item"><img src="../images/menu-item-4.png" alt="" class="carousel-image"></div>
+          <div class="carousel-item"><img src="../images/menu-item-5.png" alt="" class="carousel-image"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="promo-message">
+      <h2>Chicken Noy</h2>
+      <h3>Experience the Crispy Perfection!</h3>
+      <p>Taste the difference of quality, freshly-fried chicken that's been perfected to golden-brown excellence. Every bite is a burst of flavor and crispiness that'll keep you coming back for more.</p>
+      <ul class="promo-features">
+        <li>Fresh & Hot - Made daily with quality ingredients</li>
+        <li>Crispy & Juicy - Perfect texture every single time</li>
+        <li>Fast Delivery - Get your order in minutes</li>
+        <li>Affordable Prices - Quality that won't break the bank</li>
+      </ul>
+      <a href="menu.html" class="btn-promo-order">EXPLORE MENU</a>
+    </div>
+  </section>
+
+  <section class="home-order-flow">
+    <div>
+      <h2>Crispy Crafted, Flavor Perfected</h2>
+      <p>Enjoy quality fried chicken prepared fresh, packed hot, and served with dependable pickup and local delivery support.</p>
+      <a href="menu.html" class="btn-promo-order">Start Ordering</a>
+    </div>
+    <div class="flow-showcase">
+      <img src="../images/chicken-mascot.png" alt="Chicken Noy chicken mascot">
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Chicken Noy. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Handle deep linking for mobile messenger links
+    function handleDeepLink() {
+      const currentPath = window.location.pathname;
+      const currentHash = window.location.hash;
+      const baseUrl = window.location.origin;
+
+      // Check for hash routing first
+      if (currentHash === '#menu') {
+        window.location.href = baseUrl + '/Frontend/Page/menu.html';
+        return;
+      } else if (currentHash === '#cart') {
+        window.location.href = baseUrl + '/Frontend/Page/cart.html';
+        return;
+      } else if (currentHash === '#dashboard') {
+        window.location.href = baseUrl + '/Frontend/Page/dashboard.html';
+        return;
+      } else if (currentHash === '#login') {
+        window.location.href = baseUrl + '/Frontend/Page/login.html';
+        return;
+      }
+
+      // Check for pathname routing
+      if (currentPath.includes('/menu')) {
+        window.location.href = baseUrl + '/Frontend/Page/menu.html';
+      } else if (currentPath.includes('/cart')) {
+        window.location.href = baseUrl + '/Frontend/Page/cart.html';
+      } else if (currentPath.includes('/dashboard')) {
+        window.location.href = baseUrl + '/Frontend/Page/dashboard.html';
+      } else if (currentPath.includes('/login')) {
+        window.location.href = baseUrl + '/Frontend/Page/login.html';
+      }
+    }
+
+    function toggleMenu() {
+      const navLinks = document.getElementById('navLinks');
+      const authButtons = document.querySelector('.auth-buttons');
+      const menuToggle = document.querySelector('.menu-toggle');
+      navLinks.classList.toggle('active');
+      if (authButtons) authButtons.classList.toggle('active');
+      
+      // Close menu when clicking a link
+      const links = navLinks.querySelectorAll('a');
+      links.forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+          if (authButtons) authButtons.classList.remove('active');
+        });
+      });
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const nav = document.querySelector('nav');
+      const navLinks = document.getElementById('navLinks');
+      const menuToggle = document.querySelector('.menu-toggle');
+      
+      if (!nav.contains(e.target) && navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        const authButtons = document.querySelector('.auth-buttons');
+        if (authButtons) authButtons.classList.remove('active');
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const navLinks = document.getElementById('navLinks');
+        const authButtons = document.querySelector('.auth-buttons');
+        navLinks.classList.remove('active');
+        if (authButtons) authButtons.classList.remove('active');
+      }
+    });
+
+    function checkLogin() {
+      const token = localStorage.getItem('token');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const isLoggedIn = Boolean(token && user && user.name);
+      // Use a body class to control auth visibility (transitions handled in CSS)
+      document.body.classList.toggle('user-logged-in', isLoggedIn);
+    }
+
+    function showWelcomeToast() {
+      const toastData = JSON.parse(localStorage.getItem('welcomeToast') || 'null');
+      const toast = document.getElementById('welcomeToast');
+      if (!toastData || !toast) return;
+
+      const name = toastData.name || 'Guest';
+      toast.textContent = toastData.type === 'back' ? `Welcome Back ${name}!` : `Welcome ${name}!`;
+      toast.classList.add('show');
+      localStorage.removeItem('welcomeToast');
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 1000);
+    }
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.clear();
+        alert('Logged out successfully');
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      handleDeepLink();
+      checkLogin();
+      showWelcomeToast();
+      
+      // Cache buster - clear old cache
+      if ('caches' in window) {
+        caches.keys().then(cacheNames => {
+          cacheNames.forEach(cacheName => {
+            caches.delete(cacheName);
+          });
+        });
+      }
+    });
+
+    // Handle page visibility for mobile
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        checkLogin();
+      }
+    });
+  </script>
+  
+  <script src="../JS/common.js?v=16"></script>
+  <!-- PWA and Service Worker Setup -->
+  <script src="../JS/pwa-setup.js"></script>
+  <!-- Offline Error Handler -->
+  <script src="../JS/offline-handler.js?v=3"></script>
+</body>
+</html>

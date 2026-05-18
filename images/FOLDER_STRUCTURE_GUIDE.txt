@@ -1,0 +1,122 @@
+FOLDER STRUCTURE - WHERE TO PUT YOUR LOGO.PNG
+===============================================
+
+Your current project structure:
+
+C:\FriedChicken\
+├── Frontend\
+│   ├── CSS\
+│   │   └── style.css
+│   ├── JS\
+│   │   ├── app.js
+│   │   ├── menu.js
+│   │   ├── offline-handler.js
+│   │   └── ...
+│   ├── Page\
+│   │   ├── index.html
+│   │   ├── menu.html
+│   │   ├── login.html
+│   │   └── ... (other pages)
+│   ├── images\  ← ← ← YOUR LOGO GOES HERE
+│   │   ├── HOW_TO_ADD_LOGO.txt (this guide)
+│   │   ├── LOGO_SETUP.md
+│   │   └── logo.png  ← ← ← PUT YOUR IMAGE HERE
+│   │
+│   ├── manifest.json
+│   └── service-worker.js
+│
+├── Backend\
+│   ├── server.js
+│   ├── models\
+│   └── routes\
+│
+└── Launch-Game.bat
+
+
+EXACT PATH WHERE FILE SHOULD BE:
+=================================
+
+C:\FriedChicken\Frontend\images\logo.png
+
+Breaking it down:
+- C:\ = Your C drive
+- FriedChicken\ = Your main project folder
+- Frontend\ = Your frontend files folder
+- images\ = The images subfolder
+- logo.png = Your logo image file
+
+
+QUICK CHECK IN VS CODE:
+=======================
+
+1. Open VS Code (you're probably already in the workspace)
+
+2. In the left sidebar "Explorer", look for this structure:
+   
+   📁 FriedChicken (root)
+   │
+   └─ 📁 Frontend
+      ├─ 📁 CSS
+      ├─ 📁 JS
+      ├─ 📁 Page
+      └─ 📁 images ← Look for this folder
+         └─ logo.png ← Your logo should appear here
+
+3. To verify in VS Code:
+   - Click on the "images" folder in the Explorer
+   - You should see your logo.png file listed
+   - If you see a thumbnail preview, it's working!
+
+
+BROWSER TESTING:
+================
+
+After placing logo.png in the correct folder:
+
+1. Make sure backend server is running:
+   - Terminal → npm start (in Backend folder)
+   - OR visit: http://localhost:5000
+
+2. Hard refresh your browser:
+   - Windows: Ctrl + Shift + R
+   - Mac: Cmd + Shift + R
+
+3. Look at top-left corner of website:
+   - You should see your Chickenoy chicken logo
+   - It should be clickable (links to home)
+   - It should appear on ALL pages consistently
+
+
+FILE REQUIREMENTS:
+==================
+
+✓ Filename: logo.png (MUST be lowercase, MUST be .png)
+✓ Location: C:\FriedChicken\Frontend\images\logo.png
+✓ Format: PNG image file
+✓ Size: Any size (will auto-scale to fit navbar)
+✓ Background: Transparent recommended (but not required)
+
+
+STILL HAVING TROUBLE?
+====================
+
+Try this:
+
+1. Find your logo image file on your computer
+   (The Chickenoy chicken logo you downloaded/created)
+
+2. Right-click the image file
+   → Select "Copy" (or Ctrl+C)
+
+3. Open File Explorer
+   → Navigate to: C:\FriedChicken\Frontend\images
+
+4. Right-click in the empty space
+   → Select "Paste"
+
+5. Right-click the pasted image
+   → Select "Rename"
+   → Type: logo.png
+   → Press Enter
+
+6. Done! Your logo is now in the right place.

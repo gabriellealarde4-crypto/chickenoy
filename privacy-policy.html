@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5, user-scalable=yes">
+  <title>Privacy and Policy - Chicken Noy</title>
+  <meta name="description" content="Read Chicken Noy's privacy policy for website orders, customer messages, payment confirmation, and delivery support.">
+  <meta name="theme-color" content="#000000">
+  <link rel="manifest" href="../manifest.json">
+  <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+  <script>
+    (function(){
+      try {
+        const token = localStorage.getItem('token');
+        const userRaw = localStorage.getItem('user');
+        const isLoggedIn = Boolean(token && userRaw && userRaw !== 'null' && userRaw !== 'undefined');
+        if (isLoggedIn) document.documentElement.classList.add('user-logged-in');
+      } catch(e){}
+    })();
+  </script>
+  <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="navbar-logo"><img src="../images/logo.png" alt="Chicken Noy"><span style="display:none">Chicken Noy</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="cart.html">Cart</a>
+      <a href="dashboard.html">Orders</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="auth-buttons">
+      <a href="login.html" class="login-btn">Login</a>
+      <a href="register.html" class="signin-btn">Sign In</a>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+    <span class="menu-toggle" id="menuToggle">&#9776;</span>
+  </nav>
+
+  <main class="info-main">
+    <section class="info-shell">
+      <h1>Privacy and Policy</h1>
+      <p class="info-intro">Chicken Noy respects customer privacy and uses order information only to process purchases, coordinate delivery, confirm payments, and respond to support requests.</p>
+
+      <section class="info-section">
+        <h2>Information We Collect</h2>
+        <ul>
+          <li>Name, phone number, email address, and delivery address submitted during checkout or contact forms.</li>
+          <li>Order details, cart items, payment method, order status, and customer messages.</li>
+          <li>Optional GCash payment details or proof of payment shared by the customer for verification.</li>
+        </ul>
+      </section>
+
+      <section class="info-section">
+        <h2>How We Use Information</h2>
+        <p>We use customer information to prepare orders, contact customers about delivery, verify payments, resolve complaints, improve service, and keep accurate order records.</p>
+      </section>
+
+      <section class="info-section">
+        <h2>Data Protection</h2>
+        <p>Customer information is handled only by authorized Chicken Noy staff. We do not sell customer data. Information may be shared only when required to complete delivery, comply with law, or protect the business from fraud or abuse.</p>
+      </section>
+
+      <section class="info-section">
+        <h2>Customer Requests</h2>
+        <p>For privacy questions or correction requests, contact us at <a href="mailto:chickenoyofficial@gmail.com">chickenoyofficial@gmail.com</a> or through the <a href="contact.html">Contact Us</a> page.</p>
+      </section>
+    </section>
+  </main>
+
+  <footer></footer>
+
+  <script>
+    document.getElementById('menuToggle')?.addEventListener('click', () => {
+      document.getElementById('navLinks')?.classList.toggle('active');
+      document.querySelector('.auth-buttons')?.classList.toggle('active');
+    });
+  </script>
+  <script src="../JS/common.js?v=15"></script>
+  <script src="../JS/pwa-setup.js"></script>
+  <script src="../JS/offline-handler.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="118" viewBox="0 0 180 118" role="img" aria-labelledby="title">
+  <title id="title">GCash</title>
+  <!-- Circular blue badge background -->
+  <circle cx="90" cy="59" r="56" fill="#0D9CFF" />
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- outer ring (darker) to give depth -->
+    <path d="M101.7 17.8A47.9 47.9 0 1 0 101.7 100.2" stroke="#083C9A" stroke-width="12"/>
+    <!-- main 'G' inner arc (white) -->
+    <path d="M101.8 35.1A30.6 30.6 0 1 0 101.8 82.9" stroke="#FFFFFF" stroke-width="12"/>
+    <!-- horizontal bar for the 'G' -->
+    <path d="M75 59h36" stroke="#FFFFFF" stroke-width="12"/>
+    <!-- two sound-wave marks on the right (lighter blue) -->
+    <path d="M145 36c9.3 12.8 9.3 33.2 0 46" stroke="#7FD4FF" stroke-width="12"/>
+    <path d="M166 27c13.2 18.2 13.2 45.8 0 64" stroke="#7FD4FF" stroke-width="12"/>
+  </g>
+</svg>

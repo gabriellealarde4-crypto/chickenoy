@@ -1,0 +1,535 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5, user-scalable=yes">
+    <title>Shopping Cart - Chicken Noy | Fast Checkout</title>
+    <meta name="description" content="Review your Chicken Noy shopping cart and proceed to fast, secure checkout.">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+    <script>
+        (function(){
+            try {
+                const token = localStorage.getItem('token');
+                const userRaw = localStorage.getItem('user');
+                const isLoggedIn = Boolean(token && userRaw && userRaw !== 'null' && userRaw !== 'undefined');
+                if (isLoggedIn) document.documentElement.classList.add('user-logged-in');
+            } catch(e){}
+        })();
+    </script>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <style>
+        /* CART PAGE STYLES */
+        main.cart-main {
+            max-width: 1120px;
+            padding: clamp(22px, 4vw, 38px);
+        }
+
+        .cart-container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: clamp(18px, 3vw, 28px);
+            background:
+                linear-gradient(145deg, rgba(255, 190, 11, 0.08), rgba(255, 190, 11, 0) 38%),
+                #17120b !important;
+            border: 1px solid rgba(255, 190, 11, 0.45) !important;
+            border-radius: 10px !important;
+            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.5) !important;
+            transform: none !important;
+        }
+
+        .cart-container:hover,
+        .cart-items-section:hover,
+        .cart-empty:hover {
+            transform: none !important;
+            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .cart-container h2 {
+            text-align: left;
+            color: var(--brand);
+            margin: 0 0 20px;
+            font-size: clamp(1.6rem, 4vw, 2rem);
+            font-weight: 900;
+            line-height: 1.15;
+        }
+
+        .cart-empty {
+            text-align: center;
+            display: grid;
+            place-items: center;
+            gap: 12px;
+            min-height: 310px;
+            padding: clamp(28px, 6vw, 52px) 20px;
+            background: rgba(0, 0, 0, 0.24) !important;
+            border: 1px solid rgba(255, 190, 11, 0.35) !important;
+            border-radius: 10px !important;
+            box-shadow: none !important;
+        }
+
+        .cart-empty-icon {
+            width: 72px;
+            height: 72px;
+            border: 1px solid rgba(255, 190, 11, 0.28);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand);
+            font-size: 34px;
+            background: rgba(255, 190, 11, 0.06) !important;
+        }
+
+        .cart-empty h3 {
+            color: #ffffff;
+            font-size: clamp(1.1rem, 3vw, 1.35rem);
+            margin: 0;
+        }
+
+        .cart-empty p {
+            color: #cfcfcf !important;
+            margin: 0;
+            max-width: 420px;
+        }
+
+        .cart-empty a,
+        .btn-checkout,
+        .btn-continue {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 46px;
+            padding: 0 18px;
+            border-radius: 8px;
+            font-weight: 900;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 160ms ease, border-color 160ms ease, filter 160ms ease;
+        }
+
+        .cart-empty a,
+        .btn-checkout {
+            background: linear-gradient(135deg, var(--accent), #f2a600);
+            color: #000000;
+            border: 0;
+        }
+
+        .cart-empty a:hover,
+        .btn-checkout:hover {
+            filter: brightness(1.04);
+        }
+
+        .cart-wrapper {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
+            gap: clamp(16px, 3vw, 24px);
+            align-items: start;
+        }
+
+        .cart-items-section {
+            background: rgba(0, 0, 0, 0.28) !important;
+            border: 1px solid rgba(255, 190, 11, 0.28) !important;
+            border-radius: 10px !important;
+            overflow: hidden;
+            box-shadow: none !important;
+        }
+
+        .cart-items-header {
+            background: rgba(255, 190, 11, 0.07) !important;
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(255, 190, 11, 0.18);
+        }
+
+        .cart-items-header h3,
+        .cart-summary h3 {
+            color: var(--brand);
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        #cartItems {
+            display: grid;
+            gap: 0;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 76px minmax(0, 1fr) auto auto auto;
+            gap: 14px;
+            padding: 16px 18px;
+            border-bottom: 1px solid rgba(255, 190, 11, 0.14);
+            align-items: center;
+            background: rgba(0, 0, 0, 0.14) !important;
+            transition: background-color 160ms ease;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item:hover {
+            background: rgba(255, 190, 11, 0.05) !important;
+        }
+
+        .item-image {
+            width: 76px;
+            height: 76px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 190, 11, 0.2);
+            background: #050505 !important;
+        }
+
+        .item-details {
+            min-width: 0;
+        }
+
+        .item-name {
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1rem;
+            line-height: 1.25;
+            margin-bottom: 6px;
+        }
+
+        .item-price {
+            color: #c8c8c8;
+            font-size: 0.9rem;
+        }
+
+        .item-quantity {
+            display: inline-grid;
+            grid-template-columns: 34px 36px 34px;
+            align-items: center;
+            border: 1px solid rgba(255, 190, 11, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.38) !important;
+        }
+
+        .item-quantity button {
+            width: 34px;
+            height: 36px;
+            min-width: 34px;
+            min-height: 36px;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent !important;
+            color: var(--brand);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 900;
+            transition: background-color 160ms ease;
+        }
+
+        .item-quantity button:hover {
+            background: rgba(255, 190, 11, 0.12) !important;
+            transform: none;
+        }
+
+        .item-quantity span {
+            min-width: 36px;
+            color: #ffffff;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .item-total {
+            color: var(--brand);
+            font-weight: 900;
+            font-size: 1rem;
+            min-width: 86px;
+            text-align: right;
+        }
+
+        .item-remove {
+            min-height: 38px;
+            padding: 0 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 190, 11, 0.28);
+            background: rgba(0, 0, 0, 0.28) !important;
+            color: #ffdf7b;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 800;
+            transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+        }
+
+        .item-remove:hover {
+            background: rgba(255, 190, 11, 0.12) !important;
+            border-color: var(--brand);
+            color: #ffffff;
+            transform: none;
+        }
+
+        .cart-summary {
+            background: rgba(0, 0, 0, 0.32) !important;
+            border: 1px solid rgba(255, 190, 11, 0.34);
+            border-radius: 10px;
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 92px;
+        }
+
+        .cart-summary h3 {
+            margin-bottom: 18px;
+        }
+
+        .summary-row,
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .summary-row {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 190, 11, 0.15);
+            font-size: 0.95rem;
+        }
+
+        .summary-row label {
+            color: #cfcfcf;
+        }
+
+        .summary-row .value {
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .summary-total {
+            padding-top: 16px;
+            border-top: 2px solid rgba(255, 190, 11, 0.65);
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: var(--brand);
+            margin: 4px 0 18px;
+        }
+
+        .btn-checkout,
+        .btn-continue {
+            width: 100%;
+            font-size: 0.96rem;
+        }
+
+        .btn-continue {
+            margin-top: 10px;
+            background: transparent !important;
+            border: 1px solid rgba(255, 190, 11, 0.48);
+            color: #ffdf7b;
+        }
+
+        .btn-continue:hover {
+            background: rgba(255, 190, 11, 0.1) !important;
+            color: #ffffff;
+        }
+
+        @media (max-width: 860px) {
+            .cart-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-summary {
+                position: static;
+            }
+
+            .cart-item {
+                grid-template-columns: 68px minmax(0, 1fr) auto;
+            }
+
+            .item-image {
+                width: 68px;
+                height: 68px;
+            }
+
+            .item-total {
+                grid-column: 2 / 3;
+                text-align: left;
+            }
+
+            .item-remove {
+                grid-column: 3 / 4;
+            }
+        }
+
+        @media (max-width: 520px) {
+            main.cart-main {
+                padding: 16px 12px;
+            }
+
+            .cart-container {
+                padding: 14px;
+            }
+
+            .cart-container h2 {
+                text-align: center;
+            }
+
+            .cart-item {
+                grid-template-columns: 64px minmax(0, 1fr);
+                gap: 12px;
+                padding: 14px;
+            }
+
+            .item-image {
+                width: 64px;
+                height: 64px;
+            }
+
+            .item-quantity,
+            .item-total,
+            .item-remove {
+                grid-column: 1 / -1;
+                width: 100%;
+            }
+
+            .item-quantity {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .item-total {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html" class="navbar-logo"><img src="../images/logo.png" alt="Chicken Noy" onerror="this.style.display='none'; this.nextSibling.style.display='inline'"><span style="display:none">Chicken Noy</span></a>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="cart.html">Cart</a>
+            <a href="dashboard.html">Orders</a>
+        </div>
+        <div class="auth-buttons">
+            <a href="login.html" class="login-btn" id="loginBtn">Login</a>
+            <a href="register.html" class="signin-btn" id="signinBtn">Sign In</a>
+            <button class="logout-btn" id="logoutBtn" onclick="logout()">Logout</button>
+        </div>
+        <span class="menu-toggle" id="menuToggle">&#9776;</span>
+    </nav>
+
+    <main class="cart-main">
+        <div class="cart-container">
+            <h2>Your Shopping Cart</h2>
+
+            <div id="emptyCart" class="cart-empty" style="display: none;">
+                <div style="font-size: 60px; margin-bottom: 20px;">Cart</div>
+                <h3>Your cart is empty</h3>
+                <p style="color: var(--muted); margin-bottom: 20px;">Start adding delicious chicken items to your order!</p>
+                <a href="menu.html">Browse Menu</a>
+            </div>
+
+            <div id="cartContent" class="cart-wrapper" style="display: none;">
+                <div class="cart-items-section">
+                    <div class="cart-items-header">
+                        <h3>Cart Items</h3>
+                    </div>
+                    <div id="cartItems"></div>
+                </div>
+
+                <div class="cart-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-row">
+                        <label>Subtotal</label>
+                        <span class="value">PHP <span id="subtotal">0.00</span></span>
+                    </div>
+                    <div class="summary-row">
+                        <label>Items</label>
+                        <span class="value"><span id="itemCount">0</span></span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span>PHP <span id="totalPrice">0.00</span></span>
+                    </div>
+                    <button class="btn-checkout" onclick="checkout()">Proceed to Checkout</button>
+                    <button class="btn-continue" onclick="window.location='menu.html'">Continue Shopping</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Chicken Noy. All rights reserved.</p>
+    </footer>
+
+    <script>
+    function toggleMenu() {
+      const navLinks = document.getElementById('navLinks');
+      const authButtons = document.querySelector('.auth-buttons');
+      
+      navLinks.classList.toggle('active');
+      if (authButtons) authButtons.classList.toggle('active');
+      
+      // Close menu when clicking a link
+      const links = navLinks.querySelectorAll('a');
+      links.forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+          if (authButtons) authButtons.classList.remove('active');
+        });
+      });
+    }
+
+    // Add click event listener to menu toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.getElementById('menuToggle');
+      if (menuToggle) {
+        menuToggle.addEventListener('click', toggleMenu);
+      }
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const nav = document.querySelector('nav');
+      const navLinks = document.getElementById('navLinks');
+      
+      if (nav && !nav.contains(e.target) && navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        const authButtons = document.querySelector('.auth-buttons');
+        if (authButtons) authButtons.classList.remove('active');
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const navLinks = document.getElementById('navLinks');
+        const authButtons = document.querySelector('.auth-buttons');
+        navLinks.classList.remove('active');
+        if (authButtons) authButtons.classList.remove('active');
+      }
+    });
+
+    // Set active link based on current page
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('.nav-links a');
+      navLinks.forEach(link => {
+        if (link.getAttribute('href').includes('cart.html')) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    });
+    </script>
+    <script src="../JS/cart.js?v=7"></script>
+    <script src="../JS/common.js?v=16"></script>
+    <!-- PWA and Service Worker Setup -->
+    <script src="../JS/pwa-setup.js"></script>
+    <!-- Offline Error Handler -->
+    <script src="../JS/offline-handler.js?v=3"></script>
+</body>
+</html>
